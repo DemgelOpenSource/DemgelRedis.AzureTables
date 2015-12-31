@@ -1,0 +1,28 @@
+{
+  "version": "1.0.0-*",
+  "description": "DemgelRedis.AzureTables.Tests Console Application",
+  "authors": [ "tenowg" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+
+  "compilationOptions": {
+    "emitEntryPoint": true
+  },
+
+  "dependencies": {
+    "NUnitLite": "3.0.1"
+  },
+
+  "commands": {
+    "test": "DemgelRedis.AzureTables.Tests"
+  },
+
+  "frameworks": {
+    "dnx451": {
+      "dependencies": {
+        "DemgelRedis.AzureTables": "1.0.0-*"
+      }
+    }
+  }
+}

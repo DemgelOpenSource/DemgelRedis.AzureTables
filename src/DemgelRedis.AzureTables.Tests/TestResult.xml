@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" name="Microsoft.Dnx.Loader.dll" fullname="C:/Users/tenowg/.dnx/runtimes/dnx-clr-win-x86.1.0.0-rc1-update1/bin/Microsoft.Dnx.Loader.dll" testcasecount="1" result="Passed" start-time="2015-12-31 09:48:39Z" end-time="2015-12-31 09:49:01Z" duration="22.238791" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0" random-seed="37841396">
+  <command-line><![CDATA["C:\Users\tenowg\.dnx\runtimes\dnx-clr-win-x86.1.0.0-rc1-update1\bin\dnx.exe"  --appbase "G:\Libraries\DemgelRedis.AzureTables\src\DemgelRedis.AzureTables.Tests" "Microsoft.Dnx.ApplicationHost"  --configuration Debug "test" -wait]]></command-line>
+  <filter />
+  <test-suite type="Assembly" id="1002" name="Microsoft.Dnx.Loader.dll" fullname="C:/Users/tenowg/.dnx/runtimes/dnx-clr-win-x86.1.0.0-rc1-update1/bin/Microsoft.Dnx.Loader.dll" runstate="Runnable" testcasecount="1" result="Passed" start-time="2015-12-31 09:48:39Z" end-time="2015-12-31 09:49:01Z" duration="22.238791" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <environment framework-version="3.0.5813.39031" clr-version="4.0.30319.42000" os-version="Microsoft Windows NT 10.0.10240.0" platform="Win32NT" cwd="G:\Libraries\DemgelRedis.AzureTables\src\DemgelRedis.AzureTables.Tests" machine-name="TENOWG-PC" user="tenowg" user-domain="TENOWG-PC" culture="en-US" uiculture="en-US" os-architecture="x86" />
+    <settings>
+      <setting name="WorkDirectory" value="G:\Libraries\DemgelRedis.AzureTables\src\DemgelRedis.AzureTables.Tests" />
+      <setting name="NumberOfTestWorkers" value="8" />
+    </settings>
+    <properties>
+      <property name="_PID" value="23416" />
+      <property name="_APPDOMAIN" value="DefaultDomain" />
+    </properties>
+    <test-suite type="TestSuite" id="1003" name="DemgelRedis" fullname="DemgelRedis" runstate="Runnable" testcasecount="1" result="Passed" start-time="2015-12-31 09:48:39Z" end-time="2015-12-31 09:49:01Z" duration="22.229705" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <test-suite type="TestSuite" id="1004" name="AzureTables" fullname="DemgelRedis.AzureTables" runstate="Runnable" testcasecount="1" result="Passed" start-time="2015-12-31 09:48:39Z" end-time="2015-12-31 09:49:01Z" duration="22.229554" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <test-suite type="TestSuite" id="1005" name="Tests" fullname="DemgelRedis.AzureTables.Tests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2015-12-31 09:48:39Z" end-time="2015-12-31 09:49:01Z" duration="22.229493" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <test-suite type="TestFixture" id="1000" name="TableRedisBackupTests" fullname="DemgelRedis.AzureTables.Tests.TableRedisBackupTests" classname="DemgelRedis.AzureTables.Tests.TableRedisBackupTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2015-12-31 09:48:39Z" end-time="2015-12-31 09:49:01Z" duration="22.227402" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <test-case id="1001" name="UpdateHashTest" fullname="DemgelRedis.AzureTables.Tests.TableRedisBackupTests.UpdateHashTest" methodname="UpdateHashTest" classname="DemgelRedis.AzureTables.Tests.TableRedisBackupTests" runstate="Runnable" seed="798259755" result="Passed" start-time="2015-12-31 09:48:40Z" end-time="2015-12-31 09:49:01Z" duration="21.626458" asserts="0" />
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5F0DC0C6-D69E-433C-AC7C-130B8A7ABFE6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8F156D6C-C15E-47DB-AED1-6BF2D705BF56}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "DemgelRedis.AzureTables", "src\DemgelRedis.AzureTables\DemgelRedis.AzureTables.xproj", "{05A2DAF4-E1D3-49E8-AC8C-86AAFFA6590D}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "DemgelRedis.AzureTables.Tests", "src\DemgelRedis.AzureTables.Tests\DemgelRedis.AzureTables.Tests.xproj", "{8DAA0EC1-96FF-4BD3-A28F-8F106809D1EB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{05A2DAF4-E1D3-49E8-AC8C-86AAFFA6590D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05A2DAF4-E1D3-49E8-AC8C-86AAFFA6590D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05A2DAF4-E1D3-49E8-AC8C-86AAFFA6590D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05A2DAF4-E1D3-49E8-AC8C-86AAFFA6590D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DAA0EC1-96FF-4BD3-A28F-8F106809D1EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DAA0EC1-96FF-4BD3-A28F-8F106809D1EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DAA0EC1-96FF-4BD3-A28F-8F106809D1EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DAA0EC1-96FF-4BD3-A28F-8F106809D1EB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{05A2DAF4-E1D3-49E8-AC8C-86AAFFA6590D} = {5F0DC0C6-D69E-433C-AC7C-130B8A7ABFE6}
+		{8DAA0EC1-96FF-4BD3-A28F-8F106809D1EB} = {5F0DC0C6-D69E-433C-AC7C-130B8A7ABFE6}
+	EndGlobalSection
+EndGlobal
