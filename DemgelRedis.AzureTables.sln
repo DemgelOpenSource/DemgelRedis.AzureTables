@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8F156D6C-C15E-47DB-AED1-6BF2D705BF56}"
 	ProjectSection(SolutionItems) = preProject
 		global.json = global.json
+		Prebuild.ps1 = Prebuild.ps1
 	EndProjectSection
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "DemgelRedis.AzureTables", "src\DemgelRedis.AzureTables\DemgelRedis.AzureTables.xproj", "{05A2DAF4-E1D3-49E8-AC8C-86AAFFA6590D}"
