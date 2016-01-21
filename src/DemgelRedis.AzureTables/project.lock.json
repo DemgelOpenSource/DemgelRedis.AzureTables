@@ -12,7 +12,7 @@
           "lib/net45/Castle.Core.dll": {}
         }
       },
-      "DemgelRedis/1.0.0-CI00066": {
+      "DemgelRedis/1.0.0-beta-116": {
         "type": "package",
         "dependencies": {
           "Castle.Core": "3.3.3",
@@ -253,7 +253,7 @@
           "lib/net45/Castle.Core.dll": {}
         }
       },
-      "DemgelRedis/1.0.0-CI00066": {
+      "DemgelRedis/1.0.0-beta-116": {
         "type": "package",
         "dependencies": {
           "Castle.Core": "3.3.3",
@@ -494,7 +494,7 @@
           "lib/net45/Castle.Core.dll": {}
         }
       },
-      "DemgelRedis/1.0.0-CI00066": {
+      "DemgelRedis/1.0.0-beta-116": {
         "type": "package",
         "dependencies": {
           "Castle.Core": "3.3.3",
@@ -751,13 +751,13 @@
         "readme.txt"
       ]
     },
-    "DemgelRedis/1.0.0-CI00066": {
+    "DemgelRedis/1.0.0-beta-116": {
       "type": "package",
-      "sha512": "Bvg/K1PAmDEcKAXshG1MjItjoVWGEoj9409Tng9+mRcjpRfw6pbGBkgQDRQACm1JLJP1mDR8YAYgx91NkNK+Ng==",
+      "sha512": "8Mciii/07FM1IHyAWC6zJhnKotn2oTnk4UoohbXQikzAcFpKM1Cw4znnhg0J/1mYCQBF21T79jdQyRXpoFF93w==",
       "files": [
         "content/LICENSE.TXT",
-        "DemgelRedis.1.0.0-CI00066.nupkg",
-        "DemgelRedis.1.0.0-CI00066.nupkg.sha512",
+        "DemgelRedis.1.0.0-beta-116.nupkg",
+        "DemgelRedis.1.0.0-beta-116.nupkg.sha512",
         "DemgelRedis.nuspec",
         "lib/net45/DemgelRedis.dll"
       ]
@@ -1059,7 +1059,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "DemgelRedis >= 1.0.0-*"
+      "DemgelRedis >= 1.0.0-beta-116"
     ],
     ".NETFramework,Version=v4.5.1": []
   }

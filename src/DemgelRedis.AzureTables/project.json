@@ -1,16 +1,14 @@
 ﻿{
-  "version": "1.0.0-*",
-  "description": "DemgelRedis.AzureTables Class Library",
   "authors": [ "tenowg" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
-
   "dependencies": {
-    "DemgelRedis": "1.0.0-*"
+    "DemgelRedis": "1.0.0-beta-116"
   },
-
+  "description": "DemgelRedis.AzureTables Class Library",
   "frameworks": {
     "net451": { }
-  }
+  },
+  "licenseUrl": "",
+  "projectUrl": "",
+  "tags": [ "" ],
+  "version": "1.0.0-*"
 }

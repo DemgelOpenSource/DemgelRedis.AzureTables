@@ -21,7 +21,7 @@ namespace DemgelRedis.BackingManager
     /// Format is Table:PartitionKey:RowKey (as in: user:1201212:info)
     /// Format could be PartitionKey:RowKey (as in: user:1201212) Table is provided as param. 
     /// </summary>
-    public class TableRedisBackup : IRedisBackup
+    public class TableRedisBackup : AbstractRedisBackup
     {
         // Call from Autofac
         public delegate TableRedisBackup Factory(string storageName, string accessKey, bool useHttps = true);
@@ -105,17 +105,12 @@ namespace DemgelRedis.BackingManager
             return table;
         }
 
-        public void UpdateHash(IEnumerable<HashEntry> entries, RedisKeyObject hashKey)
-        {
-            Task.Run(async() => await UpdateHashAsync(entries, hashKey));
-        }
-
         /// <summary>
         /// Will process all hash entries (need to come from same hash)
         /// </summary>
         /// <param name="entries"></param>
         /// <param name="hashKey"></param>
-        public async Task UpdateHashAsync(IEnumerable<HashEntry> entries, RedisKeyObject hashKey, CancellationToken token = default(CancellationToken))
+        public override async Task UpdateHashAsync(IEnumerable<HashEntry> entries, RedisKeyObject hashKey, CancellationToken token = default(CancellationToken))
         {
             var operation = new TableBatchOperation();
             var cloudTable = await GetCloudTableAsync(hashKey.Prefix, token);
@@ -139,17 +134,12 @@ namespace DemgelRedis.BackingManager
             await cloudTable.ExecuteBatchAsync(operation, token);
         }
 
-        public void DeleteHash(RedisKeyObject hashKey)
-        {
-            Task.Run(async () => await DeleteHashAsync(hashKey));
-        }
-
         /// <summary>
         /// Not a very effecient way to delete a hash, better to use
         /// DeleteHashValues if you have the whole hash from the cache.
         /// </summary>
         /// <param name="hashKey"></param>
-        public async Task DeleteHashAsync(RedisKeyObject hashKey, CancellationToken token = default(CancellationToken))
+        public override async Task DeleteHashAsync(RedisKeyObject hashKey, CancellationToken token = default(CancellationToken))
         {
             var cloudTable = await GetCloudTableAsync(hashKey.Prefix, token);
 
@@ -176,11 +166,7 @@ namespace DemgelRedis.BackingManager
             } while (dynamicTableEntities.ContinuationToken != null);
         }
 
-        public void UpdateHashValue(HashEntry entry, RedisKeyObject hashKey)
-        {
-            Task.Run(async () => await UpdateHashValueAsync(entry, hashKey));
-        }
-        public async Task UpdateHashValueAsync(HashEntry entry, RedisKeyObject hashKey, CancellationToken token = default(CancellationToken))
+        public override async Task UpdateHashValueAsync(HashEntry entry, RedisKeyObject hashKey, CancellationToken token = default(CancellationToken))
         {
             var cloudTable = await GetCloudTableAsync(hashKey.Prefix, token);
 
@@ -197,21 +183,12 @@ namespace DemgelRedis.BackingManager
             await cloudTable.ExecuteAsync(operation, token);
         }
 
-        public void DeleteHashValue(HashEntry entry, RedisKeyObject hashKey)
-        {
-            Task.Run(async () => await DeleteHashValueAsync(entry, hashKey));
-        }
-
-        public async Task DeleteHashValueAsync(HashEntry entry, RedisKeyObject hashKey, CancellationToken token = default(CancellationToken))
+        public override async Task DeleteHashValueAsync(HashEntry entry, RedisKeyObject hashKey, CancellationToken token = default(CancellationToken))
         {
             await DeleteHashValueAsync(entry.Name, hashKey, token);
         }
 
-        public void DeleteHashValue(string valueKey, RedisKeyObject hashKey)
-        {
-            Task.Run(async () => await DeleteHashValueAsync(valueKey, hashKey));
-        }
-        public async Task DeleteHashValueAsync(string valueKey, RedisKeyObject hashKey, CancellationToken token = default(CancellationToken))
+        public override async Task DeleteHashValueAsync(string valueKey, RedisKeyObject hashKey, CancellationToken token = default(CancellationToken))
         {
             var cloudTable = await GetCloudTableAsync(hashKey.Prefix, token);
 
@@ -229,13 +206,7 @@ namespace DemgelRedis.BackingManager
             }
         }
 
-        public HashEntry[] GetHash(RedisKeyObject key)
-        {
-            var task = Task.Run(async () => await GetHashAsync(key));
-            return task.Result;
-        }
-
-        public async Task<HashEntry[]> GetHashAsync(RedisKeyObject key, CancellationToken token = default(CancellationToken))
+        public override async Task<HashEntry[]> GetHashAsync(RedisKeyObject key, CancellationToken token = default(CancellationToken))
         {
             var cloudTable = await GetCloudTableAsync(key.Prefix, token);
 
@@ -275,12 +246,7 @@ namespace DemgelRedis.BackingManager
             return result.ToArray();
         }
 
-        public HashEntry[] RestoreHash(IDatabase redisDatabase, RedisKeyObject hashKey)
-        {
-            return Task.Run(async () => await RestoreHashAsync(redisDatabase, hashKey)).Result;
-        }
-
-        public async Task<HashEntry[]> RestoreHashAsync(IDatabase redisDatabase, RedisKeyObject hashKey, CancellationToken token = default(CancellationToken))
+        public override async Task<HashEntry[]> RestoreHashAsync(IDatabase redisDatabase, RedisKeyObject hashKey, CancellationToken token = default(CancellationToken))
         {
             if (redisDatabase.KeyExists(hashKey.RedisKey)) return new HashEntry[0];
             var hashes = await GetHashAsync(hashKey, token);
@@ -291,12 +257,7 @@ namespace DemgelRedis.BackingManager
             return hashes;
         }
 
-        public HashEntry GetHashEntry(string valueKey, RedisKeyObject hashKey)
-        {
-            return Task.Run(async () => await GetHashEntryAsync(valueKey, hashKey)).Result;
-        }
-
-        public async Task<HashEntry> GetHashEntryAsync(string valueKey, RedisKeyObject hashKey, CancellationToken token = default(CancellationToken))
+        public override async Task<HashEntry> GetHashEntryAsync(string valueKey, RedisKeyObject hashKey, CancellationToken token = default(CancellationToken))
         {
             var cloudTable = await GetCloudTableAsync(hashKey.Prefix, token);
             var operation = TableOperation.Retrieve<DynamicTableEntity>(GetPartitionKey(hashKey), valueKey);
@@ -315,7 +276,7 @@ namespace DemgelRedis.BackingManager
         /// <param name="redisDatabase"></param>
         /// <param name="key"></param>
         /// <param name="table"></param>
-        public async void UpdateString(IDatabase redisDatabase, RedisKeyObject key, string table = "string")
+        public override async Task UpdateStringAsync(IDatabase redisDatabase, RedisKeyObject key, string table = "string", CancellationToken token = default(CancellationToken))
         {
             var value = await redisDatabase.StringGetAsync(key.RedisKey);
             if (value.IsNullOrEmpty) return;
@@ -328,7 +289,7 @@ namespace DemgelRedis.BackingManager
             await cloudTable.ExecuteAsync(operation);
         }
 
-        public async void DeleteString(RedisKeyObject key, string table = "string")
+        public override async Task DeleteStringAsync(RedisKeyObject key, string table = "string", CancellationToken token = default(CancellationToken))
         {
             var cloudTable = GetCloudTable(table);
             var operation = TableOperation.Delete(new DynamicTableEntity(key.Prefix, GetPartitionKey(key)));
@@ -343,11 +304,11 @@ namespace DemgelRedis.BackingManager
         /// <param name="key"></param>
         /// <param name="table"></param>
         /// <returns></returns>
-        public RedisValue GetString(RedisKeyObject key, string table = "string")
+        public override async Task<RedisValue> GetStringAsync(RedisKeyObject key, string table = "string", CancellationToken token = default(CancellationToken))
         {
-            var cloudTable = GetCloudTable(table);
+            var cloudTable = await GetCloudTableAsync(table);
             var operation = TableOperation.Retrieve<DynamicTableEntity>(key.Prefix, GetPartitionKey(key));
-            var result = cloudTable.Execute(operation);
+            var result = await cloudTable.ExecuteAsync(operation);
             var dynamicResult = result.Result as DynamicTableEntity;
             if (dynamicResult == null) return "";
             EntityProperty resultProperty;
@@ -361,11 +322,11 @@ namespace DemgelRedis.BackingManager
         /// <param name="key"></param>
         /// <param name="table"></param>
         /// <returns></returns>
-        public string RestoreString(IDatabase redisDatabase, RedisKeyObject key, string table = "string")
+        public override async Task<string> RestoreStringAsync(IDatabase redisDatabase, RedisKeyObject key, string table = "string", CancellationToken token = default(CancellationToken))
         {
-            var cloudTable = GetCloudTable(table);
+            var cloudTable = await GetCloudTableAsync(table, token);
             var operation = TableOperation.Retrieve<DynamicTableEntity>(key.Prefix, GetPartitionKey(key));
-            var result = cloudTable.Execute(operation);
+            var result = await cloudTable.ExecuteAsync(operation, token);
             var dynamicResult = result.Result as DynamicTableEntity;
 
             EntityProperty resultProperty;
@@ -377,21 +338,21 @@ namespace DemgelRedis.BackingManager
             // Assume redis database is most upto date?
             if (redisDatabase.StringSet(key.RedisKey, value, null, When.NotExists)) return value;
             // value already exists, so update the new value
-            UpdateString(redisDatabase, key, table);
+            await UpdateStringAsync(redisDatabase, key, table, token);
             value = redisDatabase.StringGet(key.RedisKey);
 
             return value;
         }
 
-        public void RestoreCounter(IDatabase redisDatabase, RedisKeyObject key, string table = "demgelcounter")
+        public override async Task RestoreCounterAsync(IDatabase redisDatabase, RedisKeyObject key, string table = "demgelcounter", CancellationToken token = default(CancellationToken))
         {
             var value = redisDatabase.StringGet($"{table}:{key.CounterKey}");
 
             if (!value.IsNullOrEmpty) return;
 
-            var cloudTable = GetCloudTable(table);
+            var cloudTable = await GetCloudTableAsync(table, token);
             var operation = TableOperation.Retrieve<DynamicTableEntity>(key.Prefix, key.CounterKey);
-            var result = cloudTable.Execute(operation);
+            var result = await cloudTable.ExecuteAsync(operation, token);
             var dynamicResult = result.Result as DynamicTableEntity;
             EntityProperty resultProperty;
 
@@ -404,25 +365,25 @@ namespace DemgelRedis.BackingManager
             redisDatabase.StringSet($"{table}:{key.CounterKey}", value, null, When.NotExists);
         }
 
-        public void UpdateCounter(IDatabase redisDatabase, RedisKeyObject key, string table = "demgelcounter")
+        public override async Task UpdateCounterAsync(IDatabase redisDatabase, RedisKeyObject key, string table = "demgelcounter", CancellationToken token = default(CancellationToken))
         {
             var value = redisDatabase.StringGet($"{table}:{key.CounterKey}");
             if (value.IsNullOrEmpty) return;
-            var cloudTable = GetCloudTable(table);
+            var cloudTable = await GetCloudTableAsync(table, token);
 
             var entity = new DynamicTableEntity(key.Prefix, key.CounterKey);
             entity.Properties.Add("value", new EntityProperty((string)value));
             var operation = TableOperation.InsertOrReplace(entity);
 
-            cloudTable.Execute(operation);
+            await cloudTable.ExecuteAsync(operation, token);
         }
 
-        public List<RedisValue> RestoreList(IDatabase redisDatabase, RedisKeyObject listKey)
+        public override async Task<List<RedisValue>> RestoreListAsync(IDatabase redisDatabase, RedisKeyObject listKey, CancellationToken token = default(CancellationToken))
         {
             // Don't bother if a key already exists (Redis first)
             if (redisDatabase.KeyExists(listKey.RedisKey)) return new List<RedisValue>();
 
-            var cloudTable = GetCloudTable(listKey.Prefix);
+            var cloudTable = await GetCloudTableAsync(listKey.Prefix, token);
 
             var query = new TableQuery<DynamicTableEntity>
             {
@@ -430,7 +391,7 @@ namespace DemgelRedis.BackingManager
                     TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, GetPartitionKey(listKey))
             };
 
-            var dynamicTableEntities = cloudTable.ExecuteQuerySegmented(query, null);
+            var dynamicTableEntities = await cloudTable.ExecuteQuerySegmentedAsync(query, null, token);
 
             var listList = new List<RedisValue>();
 
@@ -453,7 +414,7 @@ namespace DemgelRedis.BackingManager
                     }
                 }
 
-                dynamicTableEntities = cloudTable.ExecuteQuerySegmented(query, dynamicTableEntities.ContinuationToken);
+                dynamicTableEntities = await cloudTable.ExecuteQuerySegmentedAsync(query, dynamicTableEntities.ContinuationToken, token);
             } while (dynamicTableEntities.ContinuationToken != null);
 
             redisDatabase.ListLeftPush(listKey.RedisKey, listList.ToArray());
@@ -461,9 +422,9 @@ namespace DemgelRedis.BackingManager
             return listList;
         }
 
-        public void DeleteList(RedisKeyObject key)
+        public override async Task DeleteListAsync(RedisKeyObject key, CancellationToken token = default(CancellationToken))
         {
-            var cloudTable = GetCloudTable(key.Prefix);
+            var cloudTable = await GetCloudTableAsync(key.Prefix, token);
 
             var query = new TableQuery<DynamicTableEntity>
             {
@@ -471,7 +432,7 @@ namespace DemgelRedis.BackingManager
                     TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, GetPartitionKey(key))
             };
 
-            var dynamicTableEntities = cloudTable.ExecuteQuerySegmented(query, null);
+            var dynamicTableEntities = await cloudTable.ExecuteQuerySegmentedAsync(query, null, token);
 
             do
             {
@@ -482,9 +443,9 @@ namespace DemgelRedis.BackingManager
                 }
 
                 if (!batch.IsNullOrEmpty())
-                    cloudTable.ExecuteBatchAsync(batch).Wait();
+                    await cloudTable.ExecuteBatchAsync(batch);
 
-                dynamicTableEntities = cloudTable.ExecuteQuerySegmented(query, dynamicTableEntities.ContinuationToken);
+                dynamicTableEntities = await cloudTable.ExecuteQuerySegmentedAsync(query, dynamicTableEntities.ContinuationToken, token);
             } while (dynamicTableEntities.ContinuationToken != null);
         }
 
@@ -497,14 +458,14 @@ namespace DemgelRedis.BackingManager
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public void AddListItem(RedisKeyObject key, RedisValue value)
+        public override async Task AddListItemAsync(RedisKeyObject key, RedisValue value, CancellationToken token = default(CancellationToken))
         {
             var hash = GetSHAHash(value);
 
             // First we need to look for the item
-            var table = GetCloudTable(key.Prefix);
+            var table = await GetCloudTableAsync(key.Prefix, token);
             var operation = TableOperation.Retrieve<DynamicTableEntity>(GetPartitionKey(key), hash);
-            var result = table.Execute(operation);
+            var result = await table.ExecuteAsync(operation, token);
 
             // If result is not found
             if (result.Result == null)
@@ -534,68 +495,151 @@ namespace DemgelRedis.BackingManager
                 operation = TableOperation.Replace(((DynamicTableEntity)result.Result));
             }
 
-            table.Execute(operation);
+            await table.ExecuteAsync(operation, token);
         }
 
-        public void RemoveListItem(RedisKeyObject key, RedisValue value)
+        public override async Task RemoveListItemAsync(RedisKeyObject key, RedisValue value, CancellationToken token = default(CancellationToken))
         {
             var hash = GetSHAHash(value);
 
             // First we need to look for the item
-            var table = GetCloudTable(key.Prefix);
+            var table = await GetCloudTableAsync(key.Prefix, token);
             var operation = TableOperation.Retrieve<DynamicTableEntity>(GetPartitionKey(key), hash);
-            var result = table.Execute(operation);
+            var result = await table.ExecuteAsync(operation, token);
 
             if (result == null) return;
             var dynResult = (DynamicTableEntity)result.Result;
             dynResult["Count"].Int32Value--;
             operation = dynResult["Count"].Int32Value < 1 ? TableOperation.Delete(dynResult) : TableOperation.Replace(dynResult);
 
-            table.Execute(operation);
+            await table.ExecuteAsync(operation, token);
         }
 
-        public void UpdateListItem(RedisKeyObject key, RedisValue oldValue, RedisValue newValue)
+        public override async Task UpdateListItemAsync(RedisKeyObject key, RedisValue oldValue, RedisValue newValue, CancellationToken token = default(CancellationToken))
         {
             var hash = GetSHAHash(oldValue);
 
             // First we need to look for the item
-            var table = GetCloudTable(key.Prefix);
+            var table = await GetCloudTableAsync(key.Prefix, token);
             var operation = TableOperation.Retrieve<DynamicTableEntity>(GetPartitionKey(key), hash);
-            var result = table.Execute(operation);
+            var result = await table.ExecuteAsync(operation, token);
 
             if (result.Result != null) RemoveListItem(key, oldValue);
 
             AddListItem(key, newValue);
         }
 
-        public void RestoreSet(IDatabase redisDatabase, RedisKeyObject key)
+        public override async Task RestoreSetAsync(IDatabase redisDatabase, RedisKeyObject key, CancellationToken token = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            // Don't bother if a key already exists (Redis first)
+            if (redisDatabase.KeyExists(key.RedisKey)) return;
+
+            var cloudTable = await GetCloudTableAsync(key.Prefix, token);
+
+            var query = new TableQuery<DynamicTableEntity>
+            {
+                FilterString =
+                    TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, GetPartitionKey(key))
+            };
+
+            var dynamicTableEntities = await cloudTable.ExecuteQuerySegmentedAsync(query, null, token);
+
+            var listList = new List<SortedSetEntry>();
+
+            do
+            {
+                foreach (var item in dynamicTableEntities)
+                {
+                    var propType = item["Value"].PropertyType;
+                    double score = double.Parse(item.RowKey);
+                    switch (propType)
+                    {
+                        case EdmType.Binary:
+                            listList.Add(new SortedSetEntry(item["Value"].BinaryValue, score));
+                            break;
+                        case EdmType.String:
+                            listList.Add(new SortedSetEntry(item["Value"].StringValue, score));
+                            break;
+                    }
+                }
+
+                dynamicTableEntities = await cloudTable.ExecuteQuerySegmentedAsync(query, dynamicTableEntities.ContinuationToken, token);
+            } while (dynamicTableEntities.ContinuationToken != null);
+
+            redisDatabase.SortedSetAdd(key.RedisKey, listList.ToArray());
+
+            return;
         }
 
-        public void UpdateSetItem(RedisKeyObject key)
+        public override async Task UpdateSetItemAsync(RedisKeyObject key, SortedSetEntry entry, SortedSetEntry oldValue, CancellationToken token = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            // We remove the oldValue and add the newValue
+            await DeleteSetItemAsync(key, oldValue.Score, token);
+            await AddSetItemAsync(key, entry, token);
         }
 
-        public void AddSetItem(RedisKeyObject key, SortedSetEntry[] entries)
+        /**
+         * Will add or update the value of an item if the score is the same
+         */
+        public override async Task AddSetItemAsync(RedisKeyObject key, SortedSetEntry entry, CancellationToken token = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            var table = await GetCloudTableAsync(key.Prefix, token);
+            var tableEntry = new DynamicTableEntity
+            {
+                PartitionKey = GetPartitionKey(key),
+                RowKey = entry.Score.ToString()
+            };
+
+            if (entry.Element.IsByteArray())
+            {
+                tableEntry.Properties.Add("Value", new EntityProperty((byte[])entry.Element));
+            }
+            else
+            {
+                tableEntry.Properties.Add("Value", new EntityProperty((string)entry.Element));
+            }
+
+            var operation = TableOperation.InsertOrReplace(tableEntry);
+            await table.ExecuteAsync(operation, token);
         }
 
-        public void AddSetItem(RedisKeyObject key, RedisValue value, double score)
+        public async Task DeleteSetItemAsync(RedisKeyObject key, double score, CancellationToken token = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            var table = await GetCloudTableAsync(key.Prefix);
+            var operation = TableOperation.Delete(new TableEntity { ETag = "*", PartitionKey = GetPartitionKey(key), RowKey = score.ToString() });
+            try {
+                await table.ExecuteAsync(operation, token);
+            } catch (StorageException e)
+            {
+                if (e.RequestInformation.HttpStatusCode == 404) { /* Do Nothing  */ }
+            }
         }
 
-        public void AddSetItem(RedisKeyObject key, SortedSetEntry entry)
+        public override async Task DeleteSetAsync(RedisKeyObject setKey, CancellationToken token = default(CancellationToken))
         {
-            throw new NotImplementedException();
-        }
+            var cloudTable = await GetCloudTableAsync(setKey.Prefix, token);
 
-        public void DeleteSet(RedisKeyObject setKey)
-        {
-            throw new NotImplementedException();
+            var query = new TableQuery<DynamicTableEntity>
+            {
+                FilterString =
+                    TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, GetPartitionKey(setKey))
+            };
+
+            var dynamicTableEntities = await cloudTable.ExecuteQuerySegmentedAsync(query, null, token);
+
+            do
+            {
+                var batch = new TableBatchOperation();
+                foreach (var row in dynamicTableEntities)
+                {
+                    batch.Delete(row);
+                }
+
+                if (!batch.IsNullOrEmpty())
+                    await cloudTable.ExecuteBatchAsync(batch);
+
+                dynamicTableEntities = await cloudTable.ExecuteQuerySegmentedAsync(query, dynamicTableEntities.ContinuationToken, token);
+            } while (dynamicTableEntities.ContinuationToken != null);
         }
 
         private string GetPartitionKey(RedisKeyObject key)

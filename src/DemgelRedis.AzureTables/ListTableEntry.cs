@@ -1,6 +1,6 @@
 ﻿using Microsoft.WindowsAzure.Storage.Table;
 
-namespace DemgelRedis.BackingManager
+namespace DemgelRedis.AzureTables
 {
     public class ListTableEntry : TableEntity
     {

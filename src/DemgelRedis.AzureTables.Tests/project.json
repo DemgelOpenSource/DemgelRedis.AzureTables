@@ -15,13 +15,15 @@
   },
 
   "commands": {
-    "test": "DemgelRedis.AzureTables.Tests"
+    "test": "DemgelRedis.AzureTables.Tests",
+    "Microsoft.Dnx.TestHost": "Microsoft.Dnx.TestHost"
   },
 
   "frameworks": {
     "dnx451": {
       "dependencies": {
-        "DemgelRedis.AzureTables": "1.0.0-*"
+        "DemgelRedis.AzureTables": "1.0.0-*",
+        "Microsoft.Dnx.TestHost": "1.0.0-rc1-final"
       }
     }
   }
